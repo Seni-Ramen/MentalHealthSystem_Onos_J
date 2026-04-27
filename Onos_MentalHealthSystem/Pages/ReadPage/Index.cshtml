@@ -1,716 +1,117 @@
 @page
 @model MentalHealthSystem_Onos_J.Pages.IndexModel
 @{
-    ViewData["Title"] = "Records";
+    ViewData["Title"] = "Records Overview";
     Layout = "_Layout";
 }
 
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Lora:wght@700&display=swap" rel="stylesheet" />
+<div class="mb-4">
+    <a asp-page="/CreatePage/Index" class="btn btn-primary shadow-sm px-4 fw-bold">
+        + Create New Record
+    </a>
+</div>
 
-<style>
-/* ── Reset & Base ─────────────────────────────────────── */
-*, *::before, *::after { box-sizing: border-box; }
-
-:root {
-    --blue:        #4f6ef7;
-    --blue-lt:     #eef1fe;
-    --blue-dk:     #3a55d4;
-    --teal:        #14b8a6;
-    --teal-lt:     #e8faf8;
-    --teal-dk:     #0d9488;
-    --amber:       #f59e0b;
-    --amber-lt:    #fffbeb;
-    --amber-dk:    #d97706;
-    --bg:          #f2f4fa;
-    --surface:     #ffffff;
-    --border:      #e4e7f0;
-    --txt:         #1a1d2e;
-    --txt2:        #5c6070;
-    --muted:       #9ea3b5;
-    --radius:      13px;
-    --shadow-sm:   0 2px 10px rgba(30,40,100,.07);
-    --shadow-md:   0 6px 24px rgba(30,40,100,.12);
-    --font:        'DM Sans', sans-serif;
-    --font-display:'Lora', serif;
-}
-
-body { background: var(--bg); font-family: var(--font); color: var(--txt); }
-
-/* ── Header ───────────────────────────────────────────── */
-.mh-header {
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    padding: 0 32px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 62px;
-    position: sticky;
-    top: 0;
-    z-index: 50;
-    box-shadow: var(--shadow-sm);
-}
-
-.logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.logo-icon {
-    width: 36px; height: 36px;
-    border-radius: 10px;
-    background: linear-gradient(135deg, var(--blue), #8b5cf6);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 18px;
-}
-
-.logo-name {
-    font-family: var(--font-display);
-    font-size: 19px;
-    font-weight: 700;
-    color: var(--txt);
-    line-height: 1;
-}
-
-.logo-sub {
-    font-size: 11px;
-    color: var(--muted);
-    font-weight: 500;
-    margin-top: 1px;
-}
-
-.header-status {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 12px;
-    color: var(--txt2);
-    font-weight: 500;
-}
-
-.dot-online {
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    background: #22c55e;
-    animation: pulse 2s infinite;
-}
-
-
-/* ── Page Body ────────────────────────────────────────── */
-.page-body {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 30px 28px;
-}
-
-.page-heading {
-    margin-bottom: 24px;
-}
-
-.page-heading h1 {
-    font-family: var(--font-display);
-    font-size: 27px;
-    font-weight: 700;
-    margin: 0 0 3px;
-    color: var(--txt);
-}
-
-.page-heading p {
-    font-size: 13px;
-    color: var(--muted);
-    margin: 0;
-}
-
-/* ── Stat Row ─────────────────────────────────────────── */
-.stat-row {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
-    margin-bottom: 26px;
-}
-
-.stat-card {
-    background: var(--surface);
-    border-radius: var(--radius);
-    border: 1px solid var(--border);
-    padding: 18px 20px 16px;
-    box-shadow: var(--shadow-sm);
-    position: relative;
-    overflow: hidden;
-    transition: transform .18s, box-shadow .18s;
-}
-.stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
-
-.stat-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 3px;
-}
-.stat-card.blue::before   { background: var(--blue); }
-.stat-card.teal::before   { background: var(--teal); }
-.stat-card.amber::before  { background: var(--amber); }
-
-.stat-icon {
-    font-size: 22px;
-    margin-bottom: 8px;
-    display: block;
-}
-
-.stat-val {
-    font-size: 32px;
-    font-weight: 700;
-    line-height: 1;
-    margin-bottom: 3px;
-    color: var(--txt);
-}
-
-.stat-lbl {
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--txt2);
-    text-transform: uppercase;
-    letter-spacing: .05em;
-}
-
-/* ── Main Card ────────────────────────────────────────── */
-.main-card {
-    background: var(--surface);
-    border-radius: var(--radius);
-    border: 1px solid var(--border);
-    box-shadow: var(--shadow-sm);
-    overflow: hidden;
-}
-
-/* ── Tab Bar ──────────────────────────────────────────── */
-.tab-bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 14px 20px;
-    border-bottom: 1px solid var(--border);
-    flex-wrap: wrap;
-    gap: 12px;
-    background: #fafbff;
-}
-
-.tabs { display: flex; gap: 6px; }
-
-.tab-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 8px 16px;
-    border-radius: 9px;
-    font-size: 13px;
-    font-weight: 600;
-    font-family: var(--font);
-    cursor: pointer;
-    border: 1.5px solid var(--border);
-    background: var(--surface);
-    color: var(--txt2);
-    transition: all .18s;
-}
-
-.tab-btn .count {
-    background: var(--border);
-    color: var(--txt2);
-    border-radius: 20px;
-    padding: 1px 7px;
-    font-size: 11px;
-    transition: all .18s;
-}
-
-.tab-btn.active.blue  { background: var(--blue);  color: #fff; border-color: var(--blue); }
-.tab-btn.active.teal  { background: var(--teal);  color: #fff; border-color: var(--teal); }
-.tab-btn.active.amber { background: var(--amber); color: #fff; border-color: var(--amber);}
-.tab-btn.active .count { background: rgba(255,255,255,.25); color: #fff; }
-.tab-btn:not(.active):hover { background: var(--bg); }
-
-/* ── Search ───────────────────────────────────────────── */
-.search-wrap { position: relative; }
-.search-wrap .s-icon {
-    position: absolute;
-    left: 10px; top: 50%;
-    transform: translateY(-50%);
-    font-size: 14px;
-    color: var(--muted);
-    pointer-events: none;
-}
-.search-input {
-    padding: 8px 12px 8px 32px;
-    border: 1.5px solid var(--border);
-    border-radius: 9px;
-    font-size: 13px;
-    font-family: var(--font);
-    color: var(--txt);
-    background: var(--bg);
-    width: 220px;
-    transition: border .18s, box-shadow .18s;
-}
-.search-input:focus {
-    outline: none;
-    border-color: var(--blue);
-    box-shadow: 0 0 0 3px rgba(79,110,247,.12);
-}
-
-/* ── Table Panels ─────────────────────────────────────── */
-.tab-panel { display: none; }
-.tab-panel.active { display: block; }
-
-/* ── Table ────────────────────────────────────────────── */
-.data-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.data-table thead tr { background: #f7f8fd; }
-.data-table th {
-    padding: 11px 18px;
-    text-align: left;
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: .06em;
-    white-space: nowrap;
-}
-
-.data-table tbody tr {
-    border-top: 1px solid var(--border);
-    transition: background .13s;
-}
-
-.data-table tbody tr:hover.blue-hover  { background: var(--blue-lt); }
-.data-table tbody tr:hover.teal-hover  { background: var(--teal-lt); }
-.data-table tbody tr:hover.amber-hover { background: var(--amber-lt); }
-
-.data-table td {
-    padding: 13px 18px;
-    font-size: 14px;
-    color: var(--txt);
-    vertical-align: middle;
-}
-
-/* ── Shared Cell Pieces ───────────────────────────────── */
-.entity-cell { display: flex; align-items: center; gap: 10px; }
-.entity-name { font-weight: 600; color: var(--txt); }
-.entity-sub  { font-size: 12px; color: var(--muted); margin-top: 1px; }
-
-.avatar {
-    width: 36px; height: 36px;
-    border-radius: 50%;
-    color: #fff;
-    display: inline-flex; align-items: center; justify-content: center;
-    font-size: 13px; font-weight: 700; flex-shrink: 0;
-}
-.avatar.blue  { background: var(--blue); }
-.avatar.teal  { background: var(--teal); }
-.avatar.amber { background: var(--amber); }
-
-.chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    padding: 4px 10px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-}
-.chip.blue   { background: var(--blue-lt);  color: var(--blue-dk); }
-.chip.teal   { background: var(--teal-lt);  color: var(--teal-dk); }
-.chip.amber  { background: var(--amber-lt); color: var(--amber-dk); }
-
-.session-id {
-    font-family: monospace;
-    font-size: 12px;
-    font-weight: 700;
-    background: #f3f4f6;
-    color: var(--txt2);
-    padding: 3px 9px;
-    border-radius: 6px;
-    display: inline-block;
-}
-
-.date-main { font-weight: 600; font-size: 14px; }
-.date-sub  { font-size: 12px; color: var(--muted); margin-top: 1px; }
-
-/* ── Action Buttons ───────────────────────────────────── */
-.action-btns { display: flex; gap: 6px; }
-
-.btn-act {
-    padding: 5px 12px;
-    border-radius: 7px;
-    font-size: 12px;
-    font-weight: 600;
-    font-family: var(--font);
-    text-decoration: none;
-    border: 1.5px solid;
-    transition: all .15s;
-    display: inline-block;
-    cursor: pointer;
-}
-.btn-view  { border-color: var(--blue);  color: var(--blue);  background: #fff; }
-.btn-view:hover  { background: var(--blue);  color: #fff; text-decoration: none; }
-.btn-edit  { border-color: var(--amber); color: var(--amber-dk); background: #fff; }
-.btn-edit:hover  { background: var(--amber); color: #fff; text-decoration: none; }
-.btn-delete{ border-color: #ef4444; color: #ef4444; background: #fff; }
-.btn-delete:hover{ background: #ef4444; color: #fff; text-decoration: none; }
-
-/* ── Footer ───────────────────────────────────────────── */
-.table-footer {
-    padding: 11px 18px;
-    border-top: 1px solid var(--border);
-    font-size: 12px;
-    color: var(--muted);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: #fafbff;
-}
-
-.add-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 14px;
-    border-radius: 8px;
-    font-size: 12px;
-    font-weight: 600;
-    font-family: var(--font);
-    text-decoration: none;
-    color: #fff;
-    transition: opacity .15s;
-}
-.add-btn:hover { opacity: .88; text-decoration: none; color: #fff; }
-.add-btn.blue  { background: var(--blue); }
-.add-btn.teal  { background: var(--teal); }
-.add-btn.amber { background: var(--amber); }
-
-/* ── Empty State ──────────────────────────────────────── */
-.empty-state {
-    text-align: center;
-    padding: 52px 20px;
-    color: var(--muted);
-}
-.empty-state .ei { font-size: 38px; margin-bottom: 10px; }
-.empty-state p   { font-size: 14px; }
-
-/* ── Responsive ───────────────────────────────────────── */
-@@media (max-width: 768px) {
-    .stat-row { grid-template-columns: 1fr; }
-    .page-body { padding: 20px 16px; }
-    .tab-btn span.label { display: none; }
-    .search-input { width: 160px; }
-}
-
-@@media (max-width: 640px) {
-    .data-table thead { display: none; }
-    .data-table tbody tr { display: block; padding: 12px 16px; }
-    .data-table td { display: block; padding: 3px 0; border: none; }
-    .data-table td::before {
-        content: attr(data-label);
-        display: block;
-        font-size: 10px;
-        font-weight: 700;
-        text-transform: uppercase;
-        color: var(--muted);
-        letter-spacing: .05em;
-        margin-bottom: 2px;
-    }
-    .action-btns { margin-top: 8px; }
-}
-</style>
-
-<!-- ══════════════════════════════════════════════════ HEADER -->
-<header class="mh-header">
-    <div class="logo">
-        <div class="logo-icon">🧠</div>
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
         <div>
-            <div class="logo-name">CounselTrack</div>
-            <div class="logo-sub">Mental Health Management System</div>
-        </div>
-    </div>
-    <div class="header-status">
-        <div class="dot-online"></div>
-        System Online
-    </div>
-</header>
-
-<!-- ══════════════════════════════════════════════════ BODY -->
-<div class="page-body">
-
-    <!-- Page Title -->
-    <div class="page-heading">
-        <h1>Records Overview</h1>
-        <p>View and manage clients, counselors, and sessions from one place</p>
-    </div>
-
-    <!-- Stats -->
-    <div class="stat-row">
-        <div class="stat-card blue">
-            <span class="stat-icon">👤</span>
-            <div class="stat-val">@Model.ClientList.Count</div>
-            <div class="stat-lbl">Total Clients</div>
-        </div>
-        <div class="stat-card teal">
-            <span class="stat-icon">🩺</span>
-            <div class="stat-val">@Model.CounselorList.Count</div>
-            <div class="stat-lbl">Total Counselors</div>
-        </div>
-        <div class="stat-card amber">
-            <span class="stat-icon">📅</span>
-            <div class="stat-val">@Model.SessionList.Count</div>
-            <div class="stat-lbl">Total Sessions</div>
+            <h1 class="h3 fw-bold text-primary mb-0">Mental Health Counseling Tracker</h1>
+            <p class="text-muted small mb-0">System Records Overview</p>
         </div>
     </div>
 
-    <!-- Main Card with Tabs -->
-    <div class="main-card">
+    <ul class="nav nav-pills mb-4 bg-light p-2 rounded" id="recordTabs" role="tablist">
+        <li class="nav-item">
+            <button class="nav-link active fw-bold" id="clients-tab" data-bs-toggle="pill" data-bs-target="#panel-clients" type="button">Clients</button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link fw-bold" id="counselors-tab" data-bs-toggle="pill" data-bs-target="#panel-counselors" type="button">Counselors</button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link fw-bold" id="sessions-tab" data-bs-toggle="pill" data-bs-target="#panel-sessions" type="button">Sessions</button>
+        </li>
+    </ul>
 
-        <!-- Tab Bar -->
-        <div class="tab-bar">
-            <div class="tabs">
-                <button class="tab-btn blue active" onclick="switchTab('clients', this)">
-                    👤 <span class="label">Clients</span>
-                    <span class="count">@Model.ClientList.Count</span>
-                </button>
-                <button class="tab-btn teal" onclick="switchTab('counselors', this)">
-                    🩺 <span class="label">Counselors</span>
-                    <span class="count">@Model.CounselorList.Count</span>
-                </button>
-                <button class="tab-btn amber" onclick="switchTab('sessions', this)">
-                    📅 <span class="label">Sessions</span>
-                    <span class="count">@Model.SessionList.Count</span>
-                </button>
-            </div>
-            <div class="search-wrap">
-                <span class="s-icon">🔍</span>
-                <input type="text" id="searchInput" class="search-input"
-                       placeholder="Search records..."
-                       oninput="filterActive()" />
-            </div>
-        </div>
-
-        <!-- ── CLIENTS PANEL ──────────────────────────────── -->
-        <div id="panel-clients" class="tab-panel active">
-            <div style="overflow-x:auto;">
-                <table class="data-table" id="tbl-clients">
-                    <thead>
+    <div class="tab-content">
+        <div class="tab-pane fade show active" id="panel-clients" role="tabpanel">
+            <div class="table-responsive border rounded bg-white">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light small text-uppercase fw-bold text-muted">
                         <tr>
-                            <th>Client</th>
+                            <th class="ps-3">ID</th>
+                            <th>Name</th>
                             <th>Middle Name</th>
                             <th>Contact Info</th>
-                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @if (!Model.ClientList.Any())
-                        {
-                            <tr>
-                                <td colspan="4">
-                                    <div class="empty-state">
-                                        <div class="ei">👤</div>
-                                        <p>No clients found.</p>
-                                    </div>
-                                </td>
-                            </tr>
-                        }
                         @foreach (var c in Model.ClientList)
                         {
-                            var ini = (c.FirstName.Length > 0 ? c.FirstName[0].ToString() : "")
-                                    + (c.LastName.Length  > 0 ? c.LastName[0].ToString()  : "");
-                            <tr class="blue-hover">
-                                <td data-label="Client">
-                                    <div class="entity-cell">
-                                        <div class="avatar blue">@ini</div>
-                                        <div>
-                                            <div class="entity-name">@c.FirstName @c.LastName</div>
-                                            <div class="entity-sub">ID: @c.ClientID</div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td data-label="Middle Name">@c.MiddleName</td>
-                                <td data-label="Contact Info">
-                                    <span class="chip blue">📞 @c.ContactInfo</span>
-                                </td>
-                                <td data-label="Actions">
-                                    <div class="action-btns">
-                                        <a asp-page="/Clients/Details" asp-route-id="@c.ClientID" class="btn-act btn-view">View</a>
-                                        <a asp-page="/Clients/Edit"    asp-route-id="@c.ClientID" class="btn-act btn-edit">Edit</a>
-                                        <a asp-page="/Clients/Delete"  asp-route-id="@c.ClientID" class="btn-act btn-delete">Delete</a>
-                                    </div>
-                                </td>
+                            <tr>
+                                <td class="ps-3 text-muted">#@c.ClientID</td>
+                                <td class="fw-bold">@c.FirstName @c.LastName</td>
+                                <td>@c.MiddleName</td>
+                                <td><span class="badge bg-light text-dark border fw-normal">@c.ContactInfo</span></td>
                             </tr>
                         }
                     </tbody>
                 </table>
             </div>
-            <div class="table-footer">
-                <span id="count-clients">@Model.ClientList.Count record(s)</span>
-                <a asp-page="/Clients/Create" class="add-btn blue">＋ Add Client</a>
-            </div>
+            <div class="mt-2 small text-muted">Showing @Model.ClientList.Count client record(s)</div>
         </div>
 
-        <!-- ── COUNSELORS PANEL ───────────────────────────── -->
-        <div id="panel-counselors" class="tab-panel">
-            <div style="overflow-x:auto;">
-                <table class="data-table" id="tbl-counselors">
-                    <thead>
+        <div class="tab-pane fade" id="panel-counselors" role="tabpanel">
+            <div class="table-responsive border rounded bg-white">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light small text-uppercase fw-bold text-muted">
                         <tr>
-                            <th>Counselor</th>
-                            <th>Middle Name</th>
+                            <th class="ps-3">ID</th>
+                            <th>Counselor Name</th>
                             <th>Specialty</th>
-                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @if (!Model.CounselorList.Any())
-                        {
-                            <tr>
-                                <td colspan="4">
-                                    <div class="empty-state">
-                                        <div class="ei">🩺</div>
-                                        <p>No counselors found.</p>
-                                    </div>
-                                </td>
-                            </tr>
-                        }
                         @foreach (var co in Model.CounselorList)
                         {
-                            var ini = (co.FirstName.Length > 0 ? co.FirstName[0].ToString() : "")
-                                    + (co.LastName.Length  > 0 ? co.LastName[0].ToString()  : "");
-                            <tr class="teal-hover">
-                                <td data-label="Counselor">
-                                    <div class="entity-cell">
-                                        <div class="avatar teal">@ini</div>
-                                        <div>
-                                            <div class="entity-name">@co.FirstName @co.LastName</div>
-                                            <div class="entity-sub">ID: @co.CounselorID.ToString("D7")</div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td data-label="Middle Name">@co.MiddleName</td>
-                                <td data-label="Specialty">
-                                    <span class="chip teal">@co.Specialty</span>
-                                </td>
-                                <td data-label="Actions">
-                                    <div class="action-btns">
-                                        <a asp-page="/Counselors/Details" asp-route-id="@co.CounselorID" class="btn-act btn-view">View</a>
-                                        <a asp-page="/Counselors/Edit"    asp-route-id="@co.CounselorID" class="btn-act btn-edit">Edit</a>
-                                        <a asp-page="/Counselors/Delete"  asp-route-id="@co.CounselorID" class="btn-act btn-delete">Delete</a>
-                                    </div>
-                                </td>
+                            <tr>
+                                <td class="ps-3 text-muted">@co.CounselorID.ToString("D7")</td>
+                                <td class="fw-bold">@co.FirstName @co.LastName</td>
+                                <td><span class="text-primary fw-medium">@co.Specialty</span></td>
                             </tr>
                         }
                     </tbody>
                 </table>
             </div>
-            <div class="table-footer">
-                <span id="count-counselors">@Model.CounselorList.Count record(s)</span>
-                <a asp-page="/Counselors/Create" class="add-btn teal">＋ Add Counselor</a>
-            </div>
+            <div class="mt-2 small text-muted">Showing @Model.CounselorList.Count counselor record(s)</div>
         </div>
 
-        <!-- ── SESSIONS PANEL ─────────────────────────────── -->
-        <div id="panel-sessions" class="tab-panel">
-            <div style="overflow-x:auto;">
-                <table class="data-table" id="tbl-sessions">
-                    <thead>
+        <div class="tab-pane fade" id="panel-sessions" role="tabpanel">
+            <div class="table-responsive border rounded bg-white">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light small text-uppercase fw-bold text-muted">
                         <tr>
-                            <th>Session ID</th>
-                            <th>Date</th>
+                            <th class="ps-3">SID</th>
+                            <th>Date & Time</th>
                             <th>Client</th>
                             <th>Counselor</th>
-                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @if (!Model.SessionList.Any())
-                        {
-                            <tr>
-                                <td colspan="5">
-                                    <div class="empty-state">
-                                        <div class="ei">📅</div>
-                                        <p>No sessions found.</p>
-                                    </div>
-                                </td>
-                            </tr>
-                        }
                         @foreach (var s in Model.SessionList)
                         {
-                            <tr class="amber-hover">
-                                <td data-label="Session ID">
-                                    <span class="session-id">#@s.SessionID.ToString("D5")</span>
+                            <tr>
+                                <td class="ps-3"><code class="fw-bold text-dark">#@s.SessionID.ToString("D5")</code></td>
+                                <td>
+                                    <div class="fw-bold">@s.SessionDate.ToString("MMM dd, yyyy")</div>
+                                    <div class="small text-muted">@s.SessionDate.ToString("hh:mm tt")</div>
                                 </td>
-                                <td data-label="Date">
-                                    <div class="date-main">@s.SessionDate.ToString("MMM dd, yyyy")</div>
-                                    <div class="date-sub">@s.SessionDate.ToString("hh:mm tt")</div>
-                                </td>
-                                <td data-label="Client">
-                                    <span class="chip blue">👤 @s.ClientFullName</span>
-                                </td>
-                                <td data-label="Counselor">
-                                    <span class="chip teal">🩺 @s.CounselorFullName</span>
-                                </td>
-                                <td data-label="Actions">
-                                    <div class="action-btns">
-                                        <a asp-page="/Sessions/Details" asp-route-id="@s.SessionID" class="btn-act btn-view">View</a>
-                                        <a asp-page="/Sessions/Edit"    asp-route-id="@s.SessionID" class="btn-act btn-edit">Edit</a>
-                                        <a asp-page="/Sessions/Delete"  asp-route-id="@s.SessionID" class="btn-act btn-delete">Delete</a>
-                                    </div>
-                                </td>
+                                <td>@s.ClientFullName</td>
+                                <td>@s.CounselorFullName</td>
                             </tr>
                         }
                     </tbody>
                 </table>
             </div>
-            <div class="table-footer">
-                <span id="count-sessions">@Model.SessionList.Count record(s)</span>
-                <a asp-page="/Sessions/Create" class="add-btn amber">＋ Schedule Session</a>
-            </div>
+            <div class="mt-2 small text-muted">Showing @Model.SessionList.Count session record(s)</div>
         </div>
-
-    </div><!-- /main-card -->
-</div><!-- /page-body -->
-
-<script>
-    // ── Tab switching ───────────────────────────────────────
-    let activeTab = 'clients';
-
-    function switchTab(name, btn) {
-        // hide all panels
-        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-        // deactivate all tab buttons
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-
-        document.getElementById('panel-' + name).classList.add('active');
-        btn.classList.add('active');
-        activeTab = name;
-
-        // clear search
-        document.getElementById('searchInput').value = '';
-        resetCounts();
-    }
-
-    // ── Live search ─────────────────────────────────────────
-    function filterActive() {
-        const q    = document.getElementById('searchInput').value.toLowerCase();
-        const rows = document.querySelectorAll('#tbl-' + activeTab + ' tbody tr');
-        let count  = 0;
-        rows.forEach(row => {
-            const match = row.innerText.toLowerCase().includes(q);
-            row.style.display = match ? '' : 'none';
-            if (match) count++;
-        });
-        document.getElementById('count-' + activeTab).textContent = count + ' record(s)';
-    }
-
-    function resetCounts() {
-        document.getElementById('count-clients').textContent    = '@Model.ClientList.Count record(s)';
-        document.getElementById('count-counselors').textContent = '@Model.CounselorList.Count record(s)';
-        document.getElementById('count-sessions').textContent   = '@Model.SessionList.Count record(s)';
-        document.querySelectorAll('.data-table tbody tr').forEach(r => r.style.display = '');
-    }
-</script>
+    </div>
+</div>

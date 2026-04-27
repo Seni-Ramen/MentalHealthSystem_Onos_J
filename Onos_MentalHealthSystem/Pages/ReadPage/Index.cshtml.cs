@@ -25,7 +25,6 @@ namespace MentalHealthSystem_Onos_J.Pages
             {
                 connection.Open();
 
-                // ── Clients ──────────────────────────────────────────────
                 string clientSql = "SELECT ClientID, FirstName, MiddleName, LastName, ContactInfo FROM Client";
                 using (SqlCommand cmd = new SqlCommand(clientSql, connection))
                 using (SqlDataReader reader = cmd.ExecuteReader())
@@ -43,7 +42,6 @@ namespace MentalHealthSystem_Onos_J.Pages
                     }
                 }
 
-                // ── Counselors ────────────────────────────────────────────
                 string counselorSql = "SELECT CounselorID, FirstName, MiddleName, LastName, Specialty FROM Counselor";
                 using (SqlCommand cmd = new SqlCommand(counselorSql, connection))
                 using (SqlDataReader reader = cmd.ExecuteReader())
@@ -61,7 +59,6 @@ namespace MentalHealthSystem_Onos_J.Pages
                     }
                 }
 
-                // ── Sessions (with JOINs) ─────────────────────────────────
                 string sessionSql = @"
                     SELECT
                         s.SessionID,

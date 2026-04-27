@@ -1,0 +1,80 @@
+﻿@page
+@model MentalHealthSystem_Onos_J.Pages.UpdatePage.IndexModel
+@{
+    ViewData["Title"] = "Update " + Model.Target;
+}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4">
+                    <h4 class="fw-bold text-primary mb-4">Edit @Model.Target</h4>
+                    <hr class="mb-4 text-muted opacity-25">
+
+                    <form method="post">
+                        @if (Model.Target == "Client")
+                        {
+                            <div class="mb-3">
+                                <label class="form-label small fw-bold text-muted">FIRST NAME</label>
+                                <input type="text" asp-for="CurrentClient.FirstName" class="form-control" required />
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label small fw-bold text-muted">LAST NAME</label>
+                                <input type="text" asp-for="CurrentClient.LastName" class="form-control" required />
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label small fw-bold text-muted">CONTACT INFO</label>
+                                <input type="text" asp-for="CurrentClient.ContactInfo" class="form-control" />
+                            </div>
+                        }
+                        else if (Model.Target == "Counselor")
+                        {
+                            <div class="mb-3">
+                                <label class="form-label small fw-bold text-muted">FIRST NAME</label>
+                                <input type="text" asp-for="CurrentCounselor.FirstName" class="form-control" required />
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label small fw-bold text-muted">LAST NAME</label>
+                                <input type="text" asp-for="CurrentCounselor.LastName" class="form-control" required />
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label small fw-bold text-muted">SPECIALTY</label>
+                                <input type="text" asp-for="CurrentCounselor.Specialty" class="form-control" />
+                            </div>
+                        }
+                        else if (Model.Target == "Session")
+                        {
+                            <div class="mb-3">
+                                <label class="form-label small fw-bold text-muted">SESSION DATE & TIME</label>
+                                <input type="datetime-local" asp-for="CurrentSession.SessionDate" class="form-control" required />
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label small fw-bold text-muted">SELECT CLIENT</label>
+                                <select asp-for="CurrentSession.ClientID" class="form-select" required>
+                                    @foreach (var c in Model.ClientOpts)
+                                    {
+                                        <option value="@c.ClientID">@c.FirstName</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label small fw-bold text-muted">SELECT COUNSELOR</label>
+                                <select asp-for="CurrentSession.CounselorID" class="form-select" required>
+                                    @foreach (var co in Model.CounselorOpts)
+                                    {
+                                        <option value="@co.CounselorID">@co.FirstName</option>
+                                    }
+                                </select>
+                            </div>
+                        }
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary fw-bold">Save Changes</button>
+                            <a asp-page="/Index" class="btn btn-light text-muted border">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

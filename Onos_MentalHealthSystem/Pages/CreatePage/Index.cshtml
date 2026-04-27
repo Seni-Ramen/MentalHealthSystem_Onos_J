@@ -1,0 +1,184 @@
+﻿@page "/CreatePage"
+@model MentalHealthSystem_Onos_J.Pages.IndexModel
+@{
+    ViewData["Title"] = "System Records";
+    Layout = "_Layout";
+}
+
+<div class="container py-4">
+    <div class="row g-4">
+
+        <div class="col-lg-4">
+            <div class="sticky-top" style="top: 20px;">
+                <h4 class="fw-bold text-dark mb-3">Add New Records</h4>
+
+                <div class="card border-0 shadow-sm mb-3">
+                    <div class="card-body">
+                        <h6 class="fw-bold text-primary">New Client</h6>
+                        <form method="post" asp-page="/Index">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="TargetTable" value="Client" />
+                            <div class="mb-2">
+                                <input type="text" name="FirstName" class="form-control form-control-sm" placeholder="First Name" required />
+                            </div>
+                            <div class="mb-2">
+                                <input type="text" name="MiddleName" class="form-control form-control-sm" placeholder="Middle Name" />
+                            </div>
+                            <div class="mb-2">
+                                <input type="text" name="LastName" class="form-control form-control-sm" placeholder="Last Name" required />
+                            </div>
+                            <div class="mb-2">
+                                <input type="text" name="ContactInfo" class="form-control form-control-sm" placeholder="Contact Number" />
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-sm w-100">Create Client</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="card border-0 shadow-sm mb-3">
+                    <div class="card-body">
+                        <h6 class="fw-bold text-info">New Counselor</h6>
+                        <form method="post" asp-page="/Index">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="TargetTable" value="Counselor" />
+                            <div class="mb-2">
+                                <input type="text" name="FirstName" class="form-control form-control-sm" placeholder="First Name" required />
+                            </div>
+                            <div class="mb-2">
+                                <input type="text" name="MiddleName" class="form-control form-control-sm" placeholder="Middle Name" />
+                            </div>
+                            <div class="mb-2">
+                                <input type="text" name="LastName" class="form-control form-control-sm" placeholder="Last Name" required />
+                            </div>
+                            <div class="mb-2">
+                                <input type="text" name="Specialty" class="form-control form-control-sm" placeholder="Specialty (e.g. Clinical)" />
+                            </div>
+                            <button type="submit" class="btn btn-info text-white btn-sm w-100">Create Counselor</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <h6 class="fw-bold text-warning">Schedule Session</h6>
+                        <form method="post" asp-page="/Index">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="TargetTable" value="Session" />
+                            <div class="mb-2">
+                                <label class="small text-muted">Session Date</label>
+                                <input type="datetime-local" name="SessionDate" class="form-control form-control-sm" required />
+                            </div>
+                            <div class="mb-2">
+                                <select name="ClientID" class="form-select form-select-sm" required>
+                                    <option value="">Select Client</option>
+                                    @foreach (var client in Model.ClientList)
+                                    {
+                                        <option value="@client.ClientID">@client.FirstName</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="mb-2">
+                                <select name="CounselorID" class="form-select form-select-sm" required>
+                                    <option value="">Select Counselor</option>
+                                    @foreach (var co in Model.CounselorList)
+                                    {
+                                        <option value="@co.CounselorID">@co.FirstName</option>
+                                    }
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-warning btn-sm w-100 fw-bold">Book Session</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8">
+            <ul class="nav nav-pills mb-3 bg-light p-2 rounded" id="pills-tab" role="tablist">
+                <li class="nav-item">
+                    <button class="nav-link active btn-sm" id="pills-clients-tab" data-bs-toggle="pill" data-bs-target="#panel-clients" type="button">Clients</button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link btn-sm" id="pills-counselors-tab" data-bs-toggle="pill" data-bs-target="#panel-counselors" type="button">Counselors</button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link btn-sm" id="pills-sessions-tab" data-bs-toggle="pill" data-bs-target="#panel-sessions" type="button">Sessions</button>
+                </li>
+            </ul>
+
+            <div class="tab-content shadow-sm bg-white rounded">
+                <div class="tab-pane fade show active p-3" id="panel-clients" role="tabpanel">
+                    <table class="table table-sm table-hover align-middle mb-0">
+                        <thead class="table-light small text-uppercase">
+                            <tr>
+                                <th>Name</th>
+                                <th>Contact</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var c in Model.ClientList)
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="fw-bold">@c.FirstName</div>
+                                        <div class="small text-muted">ID: @c.ClientID</div>
+                                    </td>
+                                    <td><span class="small">@c.ContactInfo</span></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="tab-pane fade p-3" id="panel-counselors" role="tabpanel">
+                    <table class="table table-sm table-hover align-middle mb-0">
+                        <thead class="table-light small text-uppercase">
+                            <tr>
+                                <th>Counselor</th>
+                                <th>Specialty</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var co in Model.CounselorList)
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="fw-bold">@co.FirstName</div>
+                                        <div class="small text-muted">ID: @co.CounselorID.ToString("D7")</div>
+                                    </td>
+                                    <td><span class="badge bg-light text-dark border fw-normal">@co.Specialty</span></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="tab-pane fade p-3" id="panel-sessions" role="tabpanel">
+                    <table class="table table-sm table-hover align-middle mb-0">
+                        <thead class="table-light small text-uppercase">
+                            <tr>
+                                <th>Date</th>
+                                <th>Details</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var s in Model.SessionList)
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="fw-bold small text-dark">@s.SessionDate.ToString("MMM dd, yyyy")</div>
+                                        <div class="small text-muted">@s.SessionDate.ToString("hh:mm tt")</div>
+                                    </td>
+                                    <td class="small">
+                                        <div>Client: <span class="fw-bold">@s.ClientFullName</span></div>
+                                        <div>Counselor: <span class="fw-bold text-muted">@s.CounselorFullName</span></div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -21,5 +21,9 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapRazorPages();
+app.MapGet("/", context => {
+    context.Response.Redirect("/ReadPage/Index");
+    return Task.CompletedTask;
+});
 
 app.Run();
