@@ -9,6 +9,8 @@ namespace MentalHealthSystem_Onos_J.Pages.UpdatePage
     {
         private readonly IConfiguration _configuration;
 
+        public bool HasSession { get; set; }
+
         [BindProperty(SupportsGet = true)]
         public string Target { get; set; }
 
@@ -29,6 +31,26 @@ namespace MentalHealthSystem_Onos_J.Pages.UpdatePage
             string connString = _configuration.GetConnectionString("DefaultConnection");
             using SqlConnection conn = new(connString);
             conn.Open();
+            HasSession = false;
+
+            if (Target == "Client")
+            {
+                string checkSql = "SELECT COUNT(*) FROM Session WHERE ClientID=@Id";
+                using SqlCommand checkCmd = new(checkSql, conn);
+                checkCmd.Parameters.AddWithValue("@Id", Id);
+
+                int count = (int)checkCmd.ExecuteScalar();
+                HasSession = count > 0;
+            }
+            else if (Target == "Counselor")
+            {
+                string checkSql = "SELECT COUNT(*) FROM Session WHERE CounselorID=@Id";
+                using SqlCommand checkCmd = new(checkSql, conn);
+                checkCmd.Parameters.AddWithValue("@Id", Id);
+
+                int count = (int)checkCmd.ExecuteScalar();
+                HasSession = count > 0;
+            }
 
             if (Target == "Client")
             {
@@ -107,26 +129,54 @@ namespace MentalHealthSystem_Onos_J.Pages.UpdatePage
         public IActionResult OnPost()
         {
             string connString = _configuration.GetConnectionString("DefaultConnection");
+
             using SqlConnection conn = new(connString);
             conn.Open();
-            string sql = Target switch
-            {
-                "Client" => "UPDATE Client SET FirstName=@FirstName, LastName=@LastName, ContactInfo=@ContactInfo WHERE ClientID=@ClientID",
-                "Session" => "UPDATE Session SET SessionDate=@SessinDate, ClientID=@ClientID, CounselorID=@CounselorID WHERE SessionID=@SessionID",
-                _ => ""
-            };
 
-            using SqlCommand cmd = new(sql, conn);
-            cmd.Parameters.AddWithValue("@Id", Id);
-            cmd.Parameters.AddWithValue("@FN", CurrentClient.FirstName ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@LN", CurrentClient.LastName ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@CI", CurrentClient.ContactInfo ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@SD", CurrentSession.SessionDate);
-            cmd.Parameters.AddWithValue("@CID", CurrentSession.ClientID);
-            cmd.Parameters.AddWithValue("@COID", CurrentSession.CounselorID);
+            string sql = "";
+
+            using SqlCommand cmd = new();
+
+            if (Target == "Client")
+            {
+                sql = @"UPDATE Client 
+                SET FirstName=@FirstName, LastName=@LastName, ContactInfo=@ContactInfo 
+                WHERE ClientID=@ClientID";
+
+                cmd.Parameters.AddWithValue("@FirstName", CurrentClient.FirstName ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@LastName", CurrentClient.LastName ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@ContactInfo", CurrentClient.ContactInfo ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@ClientID", Id);
+            }
+            else if (Target == "Counselor")
+            {
+                sql = @"UPDATE Counselor 
+                SET FirstName=@FirstName, LastName=@LastName, Specialty=@Specialty 
+                WHERE CounselorID=@CounselorID";
+
+                cmd.Parameters.AddWithValue("@FirstName", CurrentCounselor.FirstName ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@LastName", CurrentCounselor.LastName ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@Specialty", CurrentCounselor.Specialty ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@CounselorID", Id);
+            }
+            else if (Target == "Session")
+            {
+                sql = @"UPDATE Session 
+                SET SessionDate=@SessionDate, ClientID=@ClientID, CounselorID=@CounselorID 
+                WHERE SessionID=@SessionID";
+
+                cmd.Parameters.AddWithValue("@SessionDate", CurrentSession.SessionDate);
+                cmd.Parameters.AddWithValue("@ClientID", CurrentSession.ClientID);
+                cmd.Parameters.AddWithValue("@CounselorID", CurrentSession.CounselorID);
+                cmd.Parameters.AddWithValue("@SessionID", Id);
+            }
+
+            cmd.CommandText = sql;
+            cmd.Connection = conn;
 
             cmd.ExecuteNonQuery();
-            return RedirectToPage("/ReadPage");
+
+            return RedirectToPage("/ReadPage/Index");
         }
     }
 }

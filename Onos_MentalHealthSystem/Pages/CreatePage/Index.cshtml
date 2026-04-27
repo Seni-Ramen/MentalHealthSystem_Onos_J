@@ -1,5 +1,5 @@
-﻿@page "/CreatePage"
-@model MentalHealthSystem_Onos_J.Pages.IndexModel
+﻿@page 
+@model MentalHealthSystem_Onos_J.CreatePage.IndexModel
 @{
     ViewData["Title"] = "System Records";
     Layout = "_Layout";
@@ -15,7 +15,7 @@
                 <div class="card border-0 shadow-sm mb-3">
                     <div class="card-body">
                         <h6 class="fw-bold text-primary">New Client</h6>
-                        <form method="post" asp-page="/Index">
+                        <form method="post" asp-page="/CreatePage/Index">
                             @Html.AntiForgeryToken()
                             <input type="hidden" name="TargetTable" value="Client" />
                             <div class="mb-2">
@@ -38,7 +38,7 @@
                 <div class="card border-0 shadow-sm mb-3">
                     <div class="card-body">
                         <h6 class="fw-bold text-info">New Counselor</h6>
-                        <form method="post" asp-page="/Index">
+                        <form method="post" asp-page="/CreatePage/Index">
                             @Html.AntiForgeryToken()
                             <input type="hidden" name="TargetTable" value="Counselor" />
                             <div class="mb-2">
@@ -61,7 +61,7 @@
                 <div class="card border-0 shadow-sm">
                     <div class="card-body">
                         <h6 class="fw-bold text-warning">Schedule Session</h6>
-                        <form method="post" asp-page="/Index">
+                        <form method="post" asp-page="/CreatePage/Index">
                             @Html.AntiForgeryToken()
                             <input type="hidden" name="TargetTable" value="Session" />
                             <div class="mb-2">

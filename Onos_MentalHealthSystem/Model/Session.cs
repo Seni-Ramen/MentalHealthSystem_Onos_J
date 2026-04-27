@@ -6,8 +6,8 @@
         public DateTime SessionDate { get; set; }
         public int CounselorID { get; set; }
         public int ClientID { get; set; }
-        public string ClientFullName { get; set; }
-        public string CounselorFullName { get; set; }
+        public string? ClientFullName { get; set; }
+        public string? CounselorFullName { get; set; }
         public Client client { get; set; }
         public Counselor counselor { get; set; }
     }

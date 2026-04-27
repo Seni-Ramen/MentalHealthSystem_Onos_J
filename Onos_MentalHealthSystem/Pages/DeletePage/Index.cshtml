@@ -1,0 +1,54 @@
+﻿@page
+@model MentalHealthSystem_Onos_J.Pages.DeletePage.IndexModel
+@{
+    ViewData["Title"] = "Delete " + Model.Target;
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card shadow-sm border-0">
+                <div class="card-body text-center p-4">
+                    
+                    <h4 class="text-danger fw-bold mb-3">Confirm Delete</h4>
+                    <p class="text-muted">
+                        Are you sure you want to delete this <strong>@Model.Target</strong>?
+                    </p>
+
+                    <div class="alert alert-light border">
+                        <strong>@Model.DisplayName</strong>
+                    </div>
+
+                    <form method="post">
+                        <input type="hidden" asp-for="Target" />
+                        <input type="hidden" asp-for="Id" />
+
+                        @if (Model.HasSession && (Model.Target == "Client" || Model.Target == "Counselor"))
+                        {
+                            <div class="alert alert-danger">
+                                ⚠ This @Model.Target cannot be deleted because it has a scheduled session.
+                            </div>
+
+                            <a asp-page="/ReadPage/Index" class="btn btn-secondary w-100">
+                                Back
+                            </a>
+                        }
+                        else
+                        {
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-danger fw-bold">
+                                    Yes, Delete
+                                </button>
+
+                                <a asp-page="/ReadPage/Index" class="btn btn-light border">
+                                    Cancel
+                                </a>
+                            </div>
+                        }
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
