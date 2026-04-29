@@ -172,6 +172,7 @@
                 <table class="table table-hover table-sm align-middle">
                     <thead class="table-light">
                         <tr>
+                            <th>SessionID</th>
                             <th>Date</th>
                             <th>Details</th>
                         </tr>
@@ -180,6 +181,9 @@
                         @foreach (var s in Model.SessionList)
                         {
                             <tr>
+                                <td>
+                                    <div class="fw-bold">@s.SessionID</div>
+                                </td>
                                 <td>
                                     <div class="fw-bold">@s.SessionDate.ToString("MMM dd, yyyy")</div>
                                     <small class="text-muted">@s.SessionDate.ToString("hh:mm tt")</small>

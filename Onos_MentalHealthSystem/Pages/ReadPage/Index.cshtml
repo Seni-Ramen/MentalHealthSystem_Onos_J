@@ -67,7 +67,7 @@
                         @foreach (var c in Model.ClientList)
                         {
                             <tr>
-                                <td class="ps-3 text-muted">#@c.ClientID</td>
+                                <td class="ps-3 text-muted">@c.ClientID</td>
                                 <td class="fw-bold">@c.FirstName @c.LastName</td>
                                 <td>@c.MiddleName</td>
                                 <td><span class="badge bg-light text-dark border fw-normal">@c.ContactInfo</span></td>
@@ -155,7 +155,7 @@
                         @foreach (var s in Model.SessionList)
                         {
                             <tr>
-                                <td class="ps-3"><code class="fw-bold text-dark">#@s.SessionID.ToString("D5")</code></td>
+                                <td class="ps-3"><code class="fw-bold text-dark">@s.SessionID.ToString()</code></td>
                                 <td>
                                     <div class="fw-bold">@s.SessionDate.ToString("MMM dd, yyyy")</div>
                                     <div class="small text-muted">@s.SessionDate.ToString("hh:mm tt")</div>
