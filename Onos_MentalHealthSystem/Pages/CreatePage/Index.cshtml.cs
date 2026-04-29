@@ -9,6 +9,9 @@ namespace MentalHealthSystem_Onos_J.CreatePage
     {
         private readonly IConfiguration _configuration;
 
+        [BindProperty(SupportsGet = true)]
+        public string SearchTerm { get; set; }
+
         public List<Client> ClientList { get; set; } = new();
         public List<Counselor> CounselorList { get; set; } = new();
         public List<Session> SessionList { get; set; } = new();
@@ -61,7 +64,14 @@ namespace MentalHealthSystem_Onos_J.CreatePage
                     }
                     else if (TargetTable == "Session")
                     {
-                        command.Parameters.AddWithValue("@SessionDate", SessionDate ?? (object)DBNull.Value);
+                        if (SessionDate == null || SessionDate <= DateTime.Now)
+                        {
+                            ModelState.AddModelError("SessionDate", "Session date must be in the future.");
+                            LoadAllData();
+                            return Page();
+                        }
+
+                        command.Parameters.AddWithValue("@SessionDate", SessionDate);
                         command.Parameters.AddWithValue("@ClientID", ClientID ?? (object)DBNull.Value);
                         command.Parameters.AddWithValue("@CounselorID", CounselorID ?? (object)DBNull.Value);
                     }
@@ -76,65 +86,86 @@ namespace MentalHealthSystem_Onos_J.CreatePage
 
         private void LoadAllData()
         {
+            ClientList.Clear();
+            CounselorList.Clear();
+            SessionList.Clear();
+
             string connectionString = _configuration.GetConnectionString("DefaultConnection");
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
 
-                string clientSql = "SELECT ClientID, FirstName, MiddleName, LastName, ContactInfo FROM Client";
+                string clientSql = "SELECT ClientID, FirstName, MiddleName, LastName, ContactInfo FROM Client " +
+                    "WHERE (@SearchTerm is NULL OR FirstName LIKE '%' + @SearchTerm + '%' OR LastName LIKE '%' + @SearchTerm + '%'" +
+                    "OR ContactInfo LIKE '%' + @SearchTerm + '%')";
                 using (SqlCommand cmd = new SqlCommand(clientSql, connection))
-                using (SqlDataReader reader = cmd.ExecuteReader())
                 {
-                    while (reader.Read())
+                    cmd.Parameters.AddWithValue("@SearchTerm", (object)SearchTerm ?? DBNull.Value);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
                     {
-                        ClientList.Add(new Client
+                        while (reader.Read())
                         {
-                            ClientID = Convert.ToInt32(reader["ClientID"]),
-                            FirstName = reader["FirstName"].ToString(),
-                            MiddleName = reader["MiddleName"].ToString(),
-                            LastName = reader["LastName"].ToString(),
-                            ContactInfo = reader["ContactInfo"].ToString()
-                        });
+                            ClientList.Add(new Client
+                            {
+                                ClientID = Convert.ToInt32(reader["ClientID"]),
+                                FirstName = reader["FirstName"].ToString(),
+                                MiddleName = reader["MiddleName"].ToString(),
+                                LastName = reader["LastName"].ToString(),
+                                ContactInfo = reader["ContactInfo"].ToString()
+                            });
+                        }
                     }
                 }
-
-                string counselorSql = "SELECT CounselorID, FirstName, MiddleName, LastName, Specialty FROM Counselor";
+            
+                string counselorSql = "SELECT CounselorID, FirstName, MiddleName, LastName, Specialty FROM Counselor " +
+                    "WHERE (@SearchTerm is NULL OR FirstName LIKE '%' + @SearchTerm + '%' OR LastName LIKE '%' + @SearchTerm + '%'" +
+                    "OR Specialty LIKE '%' + @SearchTerm + '%')";
                 using (SqlCommand cmd = new SqlCommand(counselorSql, connection))
-                using (SqlDataReader reader = cmd.ExecuteReader())
                 {
-                    while (reader.Read())
+                    cmd.Parameters.AddWithValue("@SearchTerm", (object)SearchTerm ?? DBNull.Value);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
                     {
-                        CounselorList.Add(new Counselor
+                        while (reader.Read())
                         {
-                            CounselorID = Convert.ToInt32(reader["CounselorID"]),
-                            FirstName = reader["FirstName"].ToString(),
-                            MiddleName = reader["MiddleName"].ToString(),
-                            LastName = reader["LastName"].ToString(),
-                            Specialty = reader["Specialty"].ToString()
-                        });
+                            CounselorList.Add(new Counselor
+                            {
+                                CounselorID = Convert.ToInt32(reader["CounselorID"]),
+                                FirstName = reader["FirstName"].ToString(),
+                                MiddleName = reader["MiddleName"].ToString(),
+                                LastName = reader["LastName"].ToString(),
+                                Specialty = reader["Specialty"].ToString()
+                            });
+                        }
                     }
                 }
+                
 
-                string sessionSql = @"SELECT s.SessionID, s.SessionDate, 
+                string sessionSql = @"SELECT * FROM (SELECT s.SessionID, s.SessionDate, 
                                         c.FirstName + ' ' + c.LastName AS ClientFullName,
                                         co.FirstName + ' ' + co.LastName AS CounselorFullName
                                       FROM Session s
                                       JOIN Client c ON s.ClientID = c.ClientID
-                                      JOIN Counselor co ON s.CounselorID = co.CounselorID";
+                                      JOIN Counselor co ON s.CounselorID = co.CounselorID) AS SessionView
+                                      WHERE (@SearchTerm is NULL OR ClientFullName LIKE '%' + @SearchTerm + '%'
+                                      OR CounselorFullName LIKE '%' + @SearchTerm + '%') ORDER BY SessionDate DESC";
                 using (SqlCommand cmd = new SqlCommand(sessionSql, connection))
-                using (SqlDataReader reader = cmd.ExecuteReader())
                 {
-                    while (reader.Read())
+                    cmd.Parameters.AddWithValue("@SearchTerm", (object)SearchTerm ?? DBNull.Value);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
                     {
-                        SessionList.Add(new Session
+                        while (reader.Read())
                         {
-                            SessionID = Convert.ToInt32(reader["SessionID"]),
-                            SessionDate = Convert.ToDateTime(reader["SessionDate"]),
-                            ClientFullName = reader["ClientFullName"].ToString(),
-                            CounselorFullName = reader["CounselorFullName"].ToString()
-                        });
+                            SessionList.Add(new Session
+                            {
+                                SessionID = Convert.ToInt32(reader["SessionID"]),
+                                SessionDate = Convert.ToDateTime(reader["SessionDate"]),
+                                ClientFullName = reader["ClientFullName"].ToString(),
+                                CounselorFullName = reader["CounselorFullName"].ToString()
+                            });
+                        }
                     }
                 }
+                
             }
         }
     }

@@ -5,6 +5,23 @@
     Layout = "_Layout";
 }
 
+<form method="get" class="mb-3">
+    <div class="input-group">
+        <input type="text"
+               name="SearchTerm"
+               value="@Model.SearchTerm"
+               class="form-control"
+               placeholder="Search clients, counselors..." />
+
+        <button class="btn btn-primary" type="submit">
+            Search
+        </button>
+        <a asp-page="/ReadPage/Index" class="btn btn-secondary">
+            Reset
+        </a>
+    </div>
+</form>
+
 <div class="container py-4">
     <div class="row g-4">
 
@@ -66,7 +83,8 @@
                             <input type="hidden" name="TargetTable" value="Session" />
                             <div class="mb-2">
                                 <label class="small text-muted">Session Date</label>
-                                <input type="datetime-local" name="SessionDate" class="form-control form-control-sm" required />
+                                <input type="datetime-local" name="SessionDate" class="form-control form-control-sm" required min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" />
+                                <span class="text-danger small">@Html.ValidationMessage("SessionDate")</span>
                             </div>
                             <div class="mb-2">
                                 <select name="ClientID" class="form-select form-select-sm" required>
